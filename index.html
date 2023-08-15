@@ -26,7 +26,7 @@
     
                 const format = document.getElementById('format').value;
     
-                const options = format === 'binary' ? { binaryMessage: file } : { armoredMessage: file };
+                const options = format === 'binary' ? { binaryMessage: file } : { armoredMessage: new TextDecoder().decode(file) };
                 const message = await openpgp.readMessage(options);
                 const { data: decrypted } = await openpgp.decrypt({
                     message,
