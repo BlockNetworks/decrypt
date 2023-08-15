@@ -19,38 +19,45 @@
     <button id="decrypt">Decrypt</button>
     <script>
         document.getElementById('decrypt').addEventListener('click', async function() {
-            const arrayBuffer = await document.getElementById('file').files[0].arrayBuffer();
-            const file = new Uint8Array(arrayBuffer);
-
-            const format = document.getElementById('format').value;
-
-            const options = format === 'binary' ? { binaryMessage: file } : { armoredMessage: file };
-            const message = await openpgp.readMessage(options);
-            const { data: decrypted } = await openpgp.decrypt({
-                message,
-                passwords: [document.getElementById('passphrase').value],
-                format
-            });
-
-            const downloadBlob = function(data, fileName) {
-                const blob = new Blob([data]);
-                const url = window.URL.createObjectURL(blob);
-                downloadURL(url, fileName);
-                setTimeout(function() {
-                    return window.URL.revokeObjectURL(url);
-                }, 1000);
-            };
-            const downloadURL = function(data, fileName) {
-                const a = document.createElement('a');
-                a.href = data;
-                a.download = fileName;
-                document.body.appendChild(a);
-                a.style = 'display: none';
-                a.click();
-                a.remove();
-            };
-
-            downloadBlob(decrypted, '');
+            try {
+                const encryptedFile = document.getElementById('file').files[0];
+                const arrayBuffer = await encryptedFile.arrayBuffer();
+                const file = new Uint8Array(arrayBuffer);
+    
+                const format = document.getElementById('format').value;
+    
+                const options = format === 'binary' ? { binaryMessage: file } : { armoredMessage: file };
+                const message = await openpgp.readMessage(options);
+                const { data: decrypted } = await openpgp.decrypt({
+                    message,
+                    passwords: [document.getElementById('passphrase').value],
+                    format
+                });
+    
+                const downloadBlob = function(data, fileName) {
+                    const blob = new Blob([data]);
+                    const url = window.URL.createObjectURL(blob);
+                    downloadURL(url, fileName);
+                    setTimeout(function() {
+                        return window.URL.revokeObjectURL(url);
+                    }, 1000);
+                };
+                const downloadURL = function(data, fileName) {
+                    const a = document.createElement('a');
+                    a.href = data;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.style = 'display: none';
+                    a.click();
+                    a.remove();
+                };
+    
+                if (encryptedFile.name.endsWith('.gpg')) {
+                    downloadBlob(decrypted, encryptedFile.name.substring(0, encryptedFile.name.length - 4));
+                } else {
+                    downloadBlob(decrypted, encryptedFile.name);
+                }
+            } catch {}
         });
     </script>
 </body>
