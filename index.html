@@ -20,13 +20,13 @@
     <script>
         document.getElementById('decrypt').addEventListener('click', async function() {
             try {
-                const encryptedFile = document.getElementById('file').files[0];
-                const arrayBuffer = await encryptedFile.arrayBuffer();
-                const file = new Uint8Array(arrayBuffer);
-    
                 const format = document.getElementById('format').value;
-    
-                const options = format === 'binary' ? { binaryMessage: file } : { armoredMessage: new TextDecoder().decode(file) };
+
+                const encryptedFile = document.getElementById('file').files[0];
+                const arrayBuffer = format === 'binary' ? (await encryptedFile.arrayBuffer()) : (await encryptedFile.text());
+                const file = new Uint8Array(arrayBuffer);
+
+                const options = format === 'binary' ? { binaryMessage: file } : { armoredMessage: file };
                 const message = await openpgp.readMessage(options);
                 const { data: decrypted } = await openpgp.decrypt({
                     message,
