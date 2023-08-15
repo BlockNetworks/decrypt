@@ -5,7 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Decrypt GPG</title>
     <script src="./openpgp.min.js"></script>
-    <script defer>
+</head>
+<body>
+    <p>Encrypted GPG file</p>
+    <input id="file" type="file">
+    <p>Format</p>
+    <select id="format">
+        <option value="binary">Binary</option>
+        <option value="armored">Armored (ASCII)</option>
+    </select>
+    <p>Passphrase</p>
+    <input id="passphrase" type="password">
+    <button id="decrypt">Decrypt</button>
+    <script>
         document.getElementById('decrypt').addEventListener('click', async function() {
             const arrayBuffer = await document.getElementById('file').files[0].arrayBuffer();
             const file = new Uint8Array(arrayBuffer);
@@ -41,17 +53,5 @@
             downloadBlob(decrypted, '');
         });
     </script>
-</head>
-<body>
-    <p>Encrypted GPG file</p>
-    <input id="file" type="file">
-    <p>Format</p>
-    <select id="format">
-        <option value="binary">Binary</option>
-        <option value="armored">Armored (ASCII)</option>
-    </select>
-    <p>Passphrase</p>
-    <input id="passphrase" type="password">
-    <button id="decrypt">Decrypt</button>
 </body>
 </html>
