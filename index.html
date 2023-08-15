@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decrypt GPG</title>
+    <script src="./openpgp.min.js"></script>
+    <script defer>
+        document.getElementById('decrypt').addEventListener('click', async function() {
+            //
+        });
+    </script>
+</head>
+<body>
+    <p>Encrypted GPG file</p>
+    <input id="file" type="file">
+    <p>Format</p>
+    <select id="format">
+        <option value="binary">Binary</option>
+        <option value="ascii">ASCII</option>
+    </select>
+    <p>Passphrase</p>
+    <input id="passphrase" type="password">
+    <button id="decrypt">Decrypt</button>
+</body>
+</html>
