@@ -7,7 +7,38 @@
     <script src="./openpgp.min.js"></script>
     <script defer>
         document.getElementById('decrypt').addEventListener('click', async function() {
-            //
+            const arrayBuffer = await document.getElementById('file').files[0].arrayBuffer();
+            const file = new Uint8Array(arrayBuffer);
+
+            const format = document.getElementById('format').value;
+
+            const options = format === 'binary' ? { binaryMessage: file } : { armoredMessage: file };
+            const message = await openpgp.readMessage(options);
+            const { data: decrypted } = await openpgp.decrypt({
+                message,
+                passwords: [document.getElementById('passphrase').value],
+                format
+            });
+
+            const downloadBlob = function(data, fileName) {
+                const blob = new Blob([data]);
+                const url = window.URL.createObjectURL(blob);
+                downloadURL(url, fileName);
+                setTimeout(function() {
+                    return window.URL.revokeObjectURL(url);
+                }, 1000);
+            };
+            const downloadURL = function(data, fileName) {
+                const a = document.createElement('a');
+                a.href = data;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.style = 'display: none';
+                a.click();
+                a.remove();
+            };
+
+            downloadBlob(decrypted, '');
         });
     </script>
 </head>
@@ -17,7 +48,7 @@
     <p>Format</p>
     <select id="format">
         <option value="binary">Binary</option>
-        <option value="ascii">ASCII</option>
+        <option value="armored">Armored (ASCII)</option>
     </select>
     <p>Passphrase</p>
     <input id="passphrase" type="password">
