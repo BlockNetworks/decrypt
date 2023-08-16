@@ -30,7 +30,7 @@
                 const { data: decrypted } = await openpgp.decrypt({
                     message,
                     passwords: [document.getElementById('passphrase').value],
-                    format
+                    format: 'binary'
                 });
     
                 const downloadBlob = function(data, fileName) {
